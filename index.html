@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <title>Flagsmith Demo</title>
     <style>
+      #banner {
+        display: none;
+        background-color: #ffcc00;
+        color: #333;
+        padding: 10px;
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
       #message {
         text-align: center;
         margin-top: 50px;
@@ -23,6 +33,9 @@
     </style>
   </head>
   <body>
+    <!-- Announcement Banner -->
+    <div id="banner">Welcome to the VIP section!</div>
+
     <div id="form">
       <h2>Enter Your Details</h2>
       <input type="text" id="name" placeholder="Enter your name" required />
@@ -104,6 +117,7 @@
 
       // Function to update content based on feature flag
       function updateContent() {
+        // Handle main feature flag
         if (flagsmith.hasFeature("show_demo_button")) {
           document.getElementById("status_image").src = "you_got_it.webp";
           document.getElementById("status_text").textContent =
@@ -112,6 +126,16 @@
           document.getElementById("status_image").src = "no_access.webp";
           document.getElementById("status_text").textContent =
             "Access Denied! You can't get this feature.";
+        }
+
+        // Handle banner feature flag
+        if (flagsmith.hasFeature("announcement_banner")) {
+          banner.style.display = "block";
+          banner.textContent =
+            flagsmith.getValue("announcement_banner") ||
+            "Welcome to the VIP section!";
+        } else {
+          banner.style.display = "none";
         }
       }
 
