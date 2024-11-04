@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Flagsmith Demo</title>
+    <style>
+      #message {
+        text-align: center;
+        margin-top: 50px;
+      }
+      #message img {
+        width: 300px;
+        height: auto;
+      }
+      #message p {
+        font-size: 1.5em;
+        font-family: Arial, sans-serif;
+      }
+      #form {
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="form">
+      <h2>Enter Your Details</h2>
+      <input type="text" id="name" placeholder="Enter your name" required />
+      <select id="country">
+        <option value="">Select your country</option>
+        <option value="AT">Austria</option>
+        <option value="BE">Belgium</option>
+        <option value="BG">Bulgaria</option>
+        <option value="HR">Croatia</option>
+        <option value="CY">Cyprus</option>
+        <option value="CZ">Czech Republic</option>
+        <option value="DK">Denmark</option>
+        <option value="EE">Estonia</option>
+        <option value="FI">Finland</option>
+        <option value="FR">France</option>
+        <option value="DE">Germany</option>
+        <option value="GR">Greece</option>
+        <option value="HU">Hungary</option>
+        <option value="IS">Iceland</option>
+        <option value="IE">Ireland</option>
+        <option value="IT">Italy</option>
+        <option value="LV">Latvia</option>
+        <option value="LI">Liechtenstein</option>
+        <option value="LT">Lithuania</option>
+        <option value="LU">Luxembourg</option>
+        <option value="MT">Malta</option>
+        <option value="NL">Netherlands</option>
+        <option value="NO">Norway</option>
+        <option value="PL">Poland</option>
+        <option value="PT">Portugal</option>
+        <option value="RO">Romania</option>
+        <option value="SK">Slovakia</option>
+        <option value="SI">Slovenia</option>
+        <option value="ES">Spain</option>
+        <option value="SE">Sweden</option>
+        <option value="CH">Switzerland</option>
+        <option value="GB">United Kingdom</option>
+      </select>
+      <select id="hair_color">
+        <option value="black">Black</option>
+        <option value="brown">Brown</option>
+        <option value="blonde">Blonde</option>
+        <option value="red">Red</option>
+        <option value="gray">Gray</option>
+        <option value="other">Other</option>
+      </select>
+      <button onclick="saveUser()">Save & Get Feature</button>
+    </div>
+
+    <div id="message">
+      <img id="status_image" src="no_access.webp" alt="Status Image" />
+      <p id="status_text">Access Denied! You can't get this feature.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flagsmith@7.0.0/index.js"></script>
+    <script>
+      // Initialize Flagsmith
+      flagsmith.init({
+        environmentID: "cgPqQk98U8ByBBQxrnjaZi",
+        api: "https://flagsmith.shared-production.alx.tech/api/v1/",
+        enableRealtimeUpdates: false,
+        onChange: updateContent,
+      });
+
+      // Function to save user details and set traits
+      function saveUser() {
+        const name = document.getElementById("name").value;
+        const country = document.getElementById("country").value;
+        const hairColor = document.getElementById("hair_color").value;
+
+        if (name && country && hairColor) {
+          flagsmith.identify(name, { country: country, hair_color: hairColor });
+          flagsmith.getFlags(); // Fetch flags based on the identified user and traits
+        } else {
+          alert("Please fill in all fields.");
+        }
+      }
+
+      // Function to update content based on feature flag
+      function updateContent() {
+        if (flagsmith.hasFeature("show_demo_button")) {
+          document.getElementById("status_image").src = "you_got_it.webp";
+          document.getElementById("status_text").textContent =
+            "Congratulations! You belong to the elite.";
+        } else {
+          document.getElementById("status_image").src = "no_access.webp";
+          document.getElementById("status_text").textContent =
+            "Access Denied! You can't get this feature.";
+        }
+      }
+
+      // Function to refresh flags every 5 seconds
+      setInterval(() => flagsmith.getFlags(), 5000);
+
+      // Initial content update
+      updateContent();
+    </script>
+  </body>
+</html>
